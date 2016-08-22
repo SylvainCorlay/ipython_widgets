@@ -2,8 +2,17 @@
 # -*- coding: utf-8 -*-
 #
 
-from jupyter_sphinx_theme import *
-init_theme()
+import os
+
+import subprocess
+import sys
+
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+def bash(fileName):
+    """Runs a bash script in the local directory"""
+    sys.stdout.flush()
+    subprocess.call("bash {}".format(fileName), shell=True)
 
 if on_rtd:
     print('On RTD, installing node and building...')
@@ -12,6 +21,34 @@ else:
     print('Not on RTD, building...')
     bash('../build-local.sh')
 print('Done bulding')
+
+
+# The suffix(es) of source filenames.
+# You can specify multiple suffix as a list of string:
+source_suffix = ['.rst', '.ipynb']
+
+# Conf.py import settings
+source_parsers = {}
+
+from recommonmark.parser import CommonMarkParser
+source_parsers['.md'] = CommonMarkParser
+source_suffix.append('.md')
+
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.mathjax',
+    'nbsphinx',
+    'IPython.sphinxext.ipython_console_highlighting',
+]
+
+html_sidebars = {
+    '**': [
+        'sidebartoc.html'
+    ]
+}
+
 
 _release = {}
 exec(compile(open('../../ipywidgets/_version.py').read(), '../../ipywidgets/_version.py', 'exec'), _release)
@@ -57,11 +94,5 @@ intersphinx_mapping = {
     'jupyter': ('http://jupyter.readthedocs.org/en/latest/', None),
 }
 html_static_path = ['_static']
-
-# Theme options are theme-specific and customize the look and feel of a
-# theme further.
-html_theme_options = {
-    'navbar_title': "ipywidgets and jupyter-js-widgets",
-}
 
 nbsphinx_allow_errors = True
