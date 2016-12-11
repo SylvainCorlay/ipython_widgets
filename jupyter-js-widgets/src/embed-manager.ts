@@ -3,7 +3,7 @@
 
 import {
     ManagerBase
-} from '../lib/manager-base';
+} from './manager-base';
 
 export
 class EmbedManager extends ManagerBase<HTMLElement> {
